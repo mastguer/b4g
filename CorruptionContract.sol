@@ -14,6 +14,9 @@ contract CorruptionContract {
 
     mapping(address => contractorInfo) public contractor;
 
+    //This will be the address of the us
+    address ourWallet;
+
     //This will be the address of the fund
     address fundId;
 
@@ -46,19 +49,17 @@ contract CorruptionContract {
     //Date of contract creation (unix time)
     uint creationDate;
 
+    constructor() payable public {
+        ourWallet = msg.sender;
+    }
+
     //Submit a contrators info
     function doSubmitContractorInfo(address _id, string memory _name, string memory _hexForLicense) public payable {
         //The contractors license would be uploaded to an immutable decentralized file storage like IPFS in a Javascript implementation
         contractor[_id] = contractorInfo(address(this), _name, _hexForLicense);
     }
 
-    constructor(
-    //debtIssuer = msg.sender most likely
-    string memory _fundName,
-    address _debtIssuer,
-    address _operatorOwner,
-    uint _fundAmount,
-    address[] memory _subContractors) public {
+    function doCreateCorruptionContract(string memory _fundName, address _debtIssuer, address _operatorOwner, uint _fundAmount, address[] memory _subContractors) public {
         fundId = address(this);
         fundName = _fundName;
         debtIssuer = _debtIssuer;
