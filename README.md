@@ -7,4 +7,7 @@ TechStars - Blockchain for Good - Corruption
 
 // Name of project 
 
-//Else?
+// variables mapped out
+// Currently Complies (constructs the .sol)
+
+// Need to implement the actual token creation and money flow mechanics now
