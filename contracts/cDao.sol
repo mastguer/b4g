@@ -8,7 +8,9 @@ contract cDao {
 
     struct contractor {
         address contractorAddress;
-        uint tokenAllocation;
+        uint initialTokensAllocated;
+        uint remainingTokensAllocated;
+        uint currentAvailableTokens;
     }
 
     // Structure for submitted invoice to the cDao
@@ -43,14 +45,14 @@ contract cDao {
     //This person is issuing the debt (government)
     address debtIssuer;
 
-    //This is the amount of money being issues
-    uint fundAmount;
+    //This is the amount of money being issued
+    uint totalFundAmount;
 
     //Amount of tokens created
-    uint totalTokens;
+    uint totalTokensFund;
 
     //Current amount of tokens left
-    uint currentTokens;
+    uint currentTokensFund;
 
     //These people are able to receive funds
     //And these people would be able to request
@@ -76,51 +78,67 @@ contract cDao {
         fundName = _fundName;
         debtIssuer = _debtIssuer;
         operatorOwner = _operatorOwner;
-        fundAmount = _fundAmount;
-        totalTokens = _fundAmount;
-        currentTokens = _fundAmount;
-        subContractors = _subContractors;
+        totalFundAmount = _fundAmount;
+        totalTokensFund = _fundAmount;
+        currentTokensFund = _fundAmount;
         //We need to confirm that the total amount of allocations in the array are not > the total tokens being submitted.
+        for (uint i = 0; i < _subContractors.length; i++) {
+            contractorInfo[_subContractors[i]] = contractor(_subContractors[i], _allocations[i], _allocations[i]);
+        }
         allocations = _allocations;
+        subContractors = _subContractors;
     }
 
     function getTotalTokens() public view returns (uint){
-        return totalTokens;
+        return totalTokensFund;
+    }
+
+    function getRemainingTokens() public view returns (uint){
+        return currentTokensFund;
     }
 
     function getDaoDetails() public view returns (address, string memory, uint, uint, address, address){
-        return (fundId, fundName, creationDate, currentTokens, debtIssuer, operatorOwner);
+        return (fundId, fundName, creationDate, currentTokensFund, debtIssuer, operatorOwner);
     }
 
     function getDaoBalance() public view returns (uint){
         return address(this).balance;
     }
 
+    function getDaoContractors() public view returns (address[] memory){
+        return subContractors;
+    }
+
+    function getDaoAllocations() public view returns (uint[] memory){
+        return allocations;
+    }
+
     function doSubmitInvoice(string memory _fileHash, uint _amountRequested) public {
         invoiceSubmission[_fileHash] = invoice(msg.sender, _fileHash, now, _amountRequested);
     }
 
-    function transfer(address _to, uint256 _value) public returns (bool success) {
-        //require(balanceOf[msg.sender] >= _value);
-        //balanceOf[msg.sender] -= _value;
-        //balanceOf[_to] += _value;
-        //Transfer(msg.sender, _to, _value);
-        //return true;
+    // Needs validation and testing.
+    function confirmInvoiceTransferTokens(address _to, uint256 _amount) public returns (bool success) {
+        if (msg.sender == operatorOwner) {
+            if (currentTokensFund > _amount) {
+                //
+                //
+            }
+        return true;
+        }
     }
 
-    function approve(address _spender, uint256 _value) public returns (bool success) {
-        //allowance[msg.sender][_spender] = _value;
-        //Approval(msg.sender, _spender, _value);
-        //return true;
+
+    // Needs validation and testing.
+    function pullFundsBurnToken(address payable _to, uint _amount) public returns (bool success) {
+        //confirm the contractor address trying to pull funds is eligibile to pull funds
+        //check to see if the contractor address has available tokens left
+        //_to.transfer(address(this)._amount);
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        //require(_value <= balanceOf[_from]);
-        //require(_value <= allowance[_from][msg.sender]);
-        //balanceOf[_from] -= _value;
-        //balanceOf[_to] += _value;
-        //allowance[_from][msg.sender] -= _value;
-        //Transfer(_from, _to, _value);
-        //return true;
-    }
+    //possible functionality --- block additional fund transfers into the Dao if the fundAdmount !== 0 
+
+    //killswitch - stop all fund transfers immediately
+
+    //
 }

@@ -2,7 +2,7 @@ pragma solidity ^0.5.3;
 import './cDao.sol';
 
 contract Corruption {
-    
+
     struct contractorInfo{
         //The contractor info is their address
         address id;
