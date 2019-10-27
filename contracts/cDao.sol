@@ -91,7 +91,7 @@ contract cDao {
         return currentTokensFund;
     }
 
-    function getDaoDetails() public view returns (address, string memory, uint, uint, address, address, address[] memory, address[] memory){
+    function getDaoDetails() public view returns (address, string memory, uint, uint, address, address, address[] memory, uint[]){
         return (fundId, fundName, creationDate, currentTokensFund, debtIssuer, operatorOwner, subContractors, allocations);
     }
 
