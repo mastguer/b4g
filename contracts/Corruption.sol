@@ -30,8 +30,10 @@ contract Corruption {
     //    contractor[_id] = contractorInfo(address(this), _name, _hexForLicense);
     //}
 
-    function doCreateCorruptionContract(string memory _fundName, address _debtIssuer, address _operatorOwner, uint _fundAmount, address[] memory _subContractors) public {
-        cDao c = new cDao(_fundName,  _debtIssuer, _operatorOwner, _fundAmount, _subContractors);
+    function doCreateCorruptionContract(
+        string memory _fundName, address _debtIssuer, address _operatorOwner, uint _fundAmount, address[] memory _subContractors, uint[] memory _allocations)
+        public {
+        cDao c = new cDao(_fundName,  _debtIssuer, _operatorOwner, _fundAmount, _subContractors, _allocations);
         allContracts.push(address(c));
     }
 
@@ -44,6 +46,10 @@ contract Corruption {
     }
 
     function getDaoInfo(address _contract) public view returns (address, string memory, uint, uint, address, address) {
-        return cDao(_contract).getDaoInfo();
+        return cDao(_contract).getDaoDetails();
+    }
+
+    function getDaoBalance(address _contract) public view returns (uint){
+        return cDao(_contract).getDaoBalance();
     }
 }
