@@ -30,7 +30,7 @@ contract Corruption {
         return cDao(_cdao).getTotalTokens();
     }
 
-    function getDaoDetails(address _cdao) public view returns (address, string memory, uint, uint, address, address, address[] memory, address[] memory, uint[]) {
+    function getDaoDetails(address _cdao) public view returns (address, string memory, uint, uint, address, address, address[] memory, uint[] memory) {
         return cDao(_cdao).getDaoDetails();
     }
 
