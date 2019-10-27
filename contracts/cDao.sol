@@ -6,6 +6,17 @@ contract cDao {
     //mapping(address => uint256) public tokens;
     //might not need a mapping
 
+    struct contractor {
+        address contractorAddress;
+        uint tokenAllocation;
+    }
+
+    struct invoiceSubmission{
+        address submittor;
+        string invoiceHash;
+        uint invoiceDate;
+    }
+
     //Date of contract creation (unix time)
     uint creationDate;
 
@@ -51,6 +62,7 @@ contract cDao {
         creationDate = now;
         fundName = _fundName;
         debtIssuer = _debtIssuer;
+        operatorOwner = _operatorOwner;
         fundAmount = _fundAmount;
         totalTokens = _fundAmount;
         currentTokens = _fundAmount;
