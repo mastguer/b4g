@@ -129,10 +129,12 @@ contract cDao {
     function confirmInvoiceTransferTokens(address _to, uint256 _amountRequested) public returns (bool success) {
         if (msg.sender == operatorOwner) {
             if (currentTokensFund > _amountRequested) {
-                //
-                //
+                contractorInfo[_to].currentAvailableTokens = (contractorInfo[_to].currentAvailableTokens + _amountRequested);
+                contractorInfo[_to].remainingTokensAllocated = (contractorInfo[_to].remainingTokensAllocated - _amountRequested);
+                currentTokensFund = (currentTokensFund - _amountRequested);
+                return true;
             }
-        return true;
+            return false;
         }
     }
 
@@ -145,9 +147,4 @@ contract cDao {
         }
     }
 
-    //possible functionality --- block additional fund transfers into the Dao if the fundAdmount !== 0
-
-    //killswitch - stop all fund transfers immediately
-
-    //
 }
