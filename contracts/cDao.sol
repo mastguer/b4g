@@ -1,10 +1,7 @@
 pragma solidity ^0.5.3;
+pragma experimental ABIEncoderV2;
 
 contract cDao {
-
-    //Amount of tokens in your contract
-    //mapping(address => uint256) public tokens;
-    //might not need a mapping
 
     struct contractor {
         address contractorAddress;
@@ -19,6 +16,7 @@ contract cDao {
         string invoiceHash;
         uint invoiceDate;
         uint amountRequested;
+        bool complete;
     }
 
     //contractor[address] will retrieve their address and token allocation
@@ -28,7 +26,7 @@ contract cDao {
     address[] invoices;
 
     //need to setup an invoice struct map
-    mapping(string => invoice) public invoiceSubmission;
+    mapping(string => invoice) public invoiceData;
 
     //Date of contract creation (unix time)
     uint creationDate;
@@ -66,9 +64,6 @@ contract cDao {
 
     //Do we need a time release for funds would this be a schedule like a once every month? Or maybe an end release date?
     //uint releaseFundsDate;
-    
-    //How much can this contract send out --- not needed I think.
-    //mapping(address => mapping(address => uint256)) public allowance;
 
     constructor(
         string memory _fundName, address _debtIssuer, address _operatorOwner, uint _fundAmount, address[] memory _subContractors, uint[] memory _allocations
@@ -83,10 +78,9 @@ contract cDao {
         currentTokensFund = _fundAmount;
         //We need to confirm that the total amount of allocations in the array are not > the total tokens being submitted.
         for (uint i = 0; i < _subContractors.length; i++) {
-            contractorInfo[_subContractors[i]] = contractor(_subContractors[i], _allocations[i], _allocations[i]);
+            contractorInfo[_subContractors[i]] = contractor(_subContractors[i], _allocations[i], _allocations[i], 0);
+            subContractors.push(_subContractors[i]);
         }
-        allocations = _allocations;
-        subContractors = _subContractors;
     }
 
     function getTotalTokens() public view returns (uint){
@@ -97,30 +91,44 @@ contract cDao {
         return currentTokensFund;
     }
 
-    function getDaoDetails() public view returns (address, string memory, uint, uint, address, address){
-        return (fundId, fundName, creationDate, currentTokensFund, debtIssuer, operatorOwner);
+    function getDaoDetails() public view returns (address, string memory, uint, uint, address, address, address[] memory, address[] memory){
+        return (fundId, fundName, creationDate, currentTokensFund, debtIssuer, operatorOwner, subContractors, allocations);
     }
 
     function getDaoBalance() public view returns (uint){
         return address(this).balance;
     }
 
-    function getDaoContractors() public view returns (address[] memory){
-        return subContractors;
+    function getContrator(address _address) public view returns (address, uint, uint, uint){
+        return (contractorInfo[_address].contractorAddress,
+        contractorInfo[_address].initialTokensAllocated,
+        contractorInfo[_address].remainingTokensAllocated,
+        contractorInfo[_address].currentAvailableTokens);
     }
 
-    function getDaoAllocations() public view returns (uint[] memory){
-        return allocations;
+    function getDaoContractorsWithFunds() public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory contractoraddress = new address[](subContractors.length);
+        uint[] memory initialTokens = new uint[](subContractors.length);
+        uint[] memory remainingTokens = new uint[](subContractors.length);
+        uint[] memory currentlyAvailableToWithdraw = new uint[](subContractors.length);
+        for (uint i = 0; i < subContractors.length; i++) {
+            contractoraddress[i] = contractorInfo[subContractors[i]].contractorAddress;
+            initialTokens[i] = contractorInfo[subContractors[i]].initialTokensAllocated;
+            remainingTokens[i] = contractorInfo[subContractors[i]].remainingTokensAllocated;
+            currentlyAvailableToWithdraw[i] = contractorInfo[subContractors[i]].currentAvailableTokens;
+        }
+        return (contractoraddress,initialTokens,remainingTokens,currentlyAvailableToWithdraw);
     }
 
     function doSubmitInvoice(string memory _fileHash, uint _amountRequested) public {
-        invoiceSubmission[_fileHash] = invoice(msg.sender, _fileHash, now, _amountRequested);
+        if (contractorInfo[msg.sender].contractorAddress == msg.sender){
+            invoiceData[_fileHash] = invoice(msg.sender, _fileHash, now, _amountRequested, false);
+        }
     }
 
-    // Needs validation and testing.
-    function confirmInvoiceTransferTokens(address _to, uint256 _amount) public returns (bool success) {
+    function confirmInvoiceTransferTokens(address _to, uint256 _amountRequested) public returns (bool success) {
         if (msg.sender == operatorOwner) {
-            if (currentTokensFund > _amount) {
+            if (currentTokensFund > _amountRequested) {
                 //
                 //
             }
@@ -129,14 +137,15 @@ contract cDao {
     }
 
 
-    // Needs validation and testing.
     function pullFundsBurnToken(address payable _to, uint _amount) public returns (bool success) {
+        if (contractorInfo[msg.sender].contractorAddress == msg.sender){
         //confirm the contractor address trying to pull funds is eligibile to pull funds
         //check to see if the contractor address has available tokens left
         //_to.transfer(address(this)._amount);
+        }
     }
 
-    //possible functionality --- block additional fund transfers into the Dao if the fundAdmount !== 0 
+    //possible functionality --- block additional fund transfers into the Dao if the fundAdmount !== 0
 
     //killswitch - stop all fund transfers immediately
 
