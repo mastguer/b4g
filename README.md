@@ -1,25 +1,22 @@
-# b4g
-TechStars - Blockchain for Good - Corruption
+# OpenOrigin - Solving the issue of corruption in construction.
+## Techstars - Blockchain for Good
 
-// Filling in names of everyone
+### Team:
 
-// What the goal of the project is 
+Andreas - tveitandreas@gmail.com
 
-// Name of project 
+Arturo - asanzjones@gmail.com
 
-// variables mapped out
-// Currently Complies (constructs the .sol)
+Carl - carcl.c.choi@gmail.com
 
-// Need to implement the actual token creation and money flow mechanics now
+James - james@5-fifths.com
+
+Jon Marc - joanmarc.a.leinn@gmail.com
+
+Jorge - jorge.pinero.hdez@gmail.com
+
+Steven - steven.matthiesen@gmail.com
+
+Tom - lifters@gmail.com
 
 
-//////Handy commands for me /////
-Corruption.deployed().then(function(instance){app = instance;});
-
-app.doSubmitContractorInfo('0xFEc7c3C519a97791d5Ae2BF1b125eb0e6C4a883E','asdf','fdsa');
-
-app.doCreateCorruptionContract('My First Contract', '0xFEc7c3C519a97791d5Ae2BF1b125eb0e6C4a883E', '0x61e8Ac3c336491008e8bA5B60B0A103B2F6a811D',101,[]);
-
-app.getTotalTokens(address)
-
-app.getCorruptionInfo(address)
