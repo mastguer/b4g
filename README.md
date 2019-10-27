@@ -1,5 +1,6 @@
 # OpenOrigin - Solving the issue of corruption in construction.
 ## Techstars - Blockchain for Good
+### openorigin.co
 
 ### Team:
 
@@ -18,5 +19,3 @@ Jorge - jorge.pinero.hdez@gmail.com
 Steven - steven.matthiesen@gmail.com
 
 Tom - lifters@gmail.com
-
-
